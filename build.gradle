@@ -5,6 +5,35 @@ plugins {
     id 'org.springframework.boot' version '2.4.4'
     id 'io.spring.dependency-management' version '1.1.0'
     id 'jacoco'
+    //for upload to Nexus repository
+    id 'maven-publish'
+}
+
+def repository = 'https://repo.linecorp.com'
+sourceCompatibility = '11'
+version = '0.0.3-SNAPSHOT'
+
+publishing {
+    publications {
+        mavenWeb(MavenPublication) {
+            artifact bootWar
+            groupId = 'com.linecorp'
+            artifactId = 'cde-sample'
+            from components.web
+        }
+    }
+    repositories {
+        maven {
+            credentials {
+                username "repomaster"
+                password "xktmakvhfl5"
+            }
+
+            def releasesRepoUrl = "${repository}/content/repositories/releases/"
+            def snapshotsRepoUrl = "${repository}/content/repositories/nightly/"
+            url = version.endsWith('-SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+        }
+    }
 }
 
 jacoco {
@@ -13,11 +42,6 @@ jacoco {
     //reportsDirectory = layout.buildDirectory.dir('customJacococReportDir')
 }
 
-
-group = 'com.cde'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
-
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
@@ -25,8 +49,8 @@ configurations {
 }
 
 repositories {
-    maven { url "https://repo.linecorp.com/repository/releases/" }
-    maven { url "https://repo.linecorp.com/repository/snapshots/" }
+    maven { url "${repository}/repository/releases/" }
+    maven { url "${repository}/repository/snapshots/" }
     mavenCentral()
 }
 
