@@ -7,6 +7,10 @@ plugins {
     id 'jacoco'
     //for upload to Nexus repository
     id 'maven-publish'
+    //for SonarQube Analysis
+    id 'org.sonarqube' version '3.2.0'
+    //PMD test
+    id 'pmd'
 }
 
 def repository = 'https://repo.linecorp.com'
@@ -74,4 +78,27 @@ jacocoTestReport {
         csv.required = false
         html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
     }
+}
+
+sonarqube {
+    properties {
+        property 'sonar.host.url', 'https://sonar.linecorp.com'
+        //line-dev-user account token
+        property 'sonar.login', '4a63ce650324993ccf74072f8358c5cbc7986a79'
+        property 'sonar.projectKey', 'LINE-DevOps_cde-sample'
+        property 'sonar.projectName', 'cde-sample'
+        property 'sonar.projectDescription', 'CDE(Common DevOps Engineering) - Sample project for build tests'
+        property 'sonar.sources', 'src/main'
+        property 'sonar.tests', 'src/test'
+        property 'sonar.java.binaries', 'build/classes'
+        property 'sonar.language', 'java'
+        property 'sonar.sourceEncoding' , 'UTF-8'
+    }
+}
+
+pmd {
+    consoleOutput = true
+    toolVersion = "6.21.0"
+    rulesMinimumPriority = 5 //default. https://pmd.sourceforge.io/pmd-6.39.0/pmd_userdocs_configuring_rules.html
+    //threads = 2
 }
