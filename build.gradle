@@ -5,12 +5,10 @@ plugins {
     id 'org.springframework.boot' version '2.4.4'
     id 'io.spring.dependency-management' version '1.1.0'
     id 'jacoco'
-    //for upload to Nexus repository
-    id 'maven-publish'
-    //for SonarQube Analysis
+    id 'maven-publish' //for upload to Nexus repository
     id 'org.sonarqube' version '3.2.0'
-    //PMD test
     id 'pmd'
+    id 'checkstyle'
 }
 
 def repository = 'https://repo.linecorp.com'
@@ -101,4 +99,9 @@ pmd {
     toolVersion = "6.21.0"
     rulesMinimumPriority = 5 //default. https://pmd.sourceforge.io/pmd-6.39.0/pmd_userdocs_configuring_rules.html
     //threads = 2
+}
+
+checkstyle {
+    toolVersion '10.7.0'
+    configFile = file(rootDir.path + "/config/checkstyle/checkstyle.xml")
 }
