@@ -1,13 +1,13 @@
-# Common DevOps Engineering - Sample Project for Build Tests
+<H1>Common DevOps Engineering - Sample Project for Build Tests</H1>
 
-## Introduction
+<H2>Introduction</H2>
 
 - This is a very simple project for testing various kinds of build
 - This project can used for the below test-build jobs
 
-### Test build jobs list in the Jenkins
+<H2>Test build jobs list in the Jenkins</H2>
 
-#### 1) Integration Test
+<H3>1) Integration Test</H3>
 
 - GitHub Integration
 
@@ -22,13 +22,16 @@
     - Upload Build Artifacts to the Nexus: https://jenkins.linecorp.com/view/infraops.sample/job/sample_nexus_upload
 - Harbor Integration
 
-    - Push/Pull images from/to the Harbor: 
+    - Push images to the Harbor: https://jenkins.linecorp.com/view/infraops.sample/job/sample_harbor_pull/
+    - Pull images from the Harbor: https://jenkins.linecorp.com/view/infraops.sample/job/sample_harbor_push/
 - Docker Integration
+
+    - https://jenkins.linecorp.com/view/infraops.sample/job/sample_docker_pipeline/
 - Kubernetes Integration
 - InfluxDB Integration
 
 
-#### 2) Test
+<H3>2) Test</H3>
 
 - Jacoco
 
@@ -39,9 +42,11 @@
     - Checkstyle: https://jenkins.linecorp.com/view/infraops.sample/job/sample_test_checkstyle
 - JUnit
 
-    - Junit: 
-- HTML Report
+    - Junit: https://jenkins.linecorp.com/view/infraops.sample/job/sample_test_junit/
 - SonarQube
 
-#### 3) Blue Oceans
+    - SonarQube Analysis in gradle build: https://jenkins.linecorp.com/view/infraops.sample/job/sample_test_sonarqube_gradle/
+    - SonarQube Analysis by SonarScanner: https://jenkins.linecorp.com/view/infraops.sample/job/sample_test_sonarqube_scanner/
+
+<H3>3) Blue Oceans</H3>
 
