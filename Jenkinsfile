@@ -22,7 +22,7 @@ pipeline {
     stages {
         stage('checkout scm') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: 'feature/harbor']], extensions: [], gitTool: 'Default', userRemoteConfigs: [[url: 'git@git.linecorp.com:LINE-DevOps/cde-sample.git']]])
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], gitTool: 'Default', userRemoteConfigs: [[url: 'git@git.linecorp.com:LINE-DevOps/cde-sample.git']]])
             }
         }
 
