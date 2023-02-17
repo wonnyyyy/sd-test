@@ -73,6 +73,8 @@ You can build the below job manually to check main features after Jenkins Master
 
 
 ### 4) Language-realted
-| Lang-related |                                                                                                      |
-|--------------|------------------------------------------------------------------------------------------------------|
+| Lang-related   |                                                                                                      |
+|----------------|------------------------------------------------------------------------------------------------------|
 | GO lang        | https://jenkins.linecorp.com/view/infraops.sample/job/sample_lang_go/ |
+| Python (pyenv) | https://jenkins.linecorp.com/view/infraops.sample/job/sample_pyenv |
+| Ruby (rbenv)   | https://jenkins.linecorp.com/view/infraops.sample/job/sample_rbenv/ |
