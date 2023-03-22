@@ -26,10 +26,8 @@ publishing {
     }
     repositories {
         maven {
-            credentials {
-                username "repomaster"
-                password "xktmakvhfl5"
-            }
+            name = 'lineNexusRepository'
+            credentials(PasswordCredentials)
 
             def releasesRepoUrl = "${repository}/content/repositories/releases/"
             def snapshotsRepoUrl = "${repository}/content/repositories/nightly/"
