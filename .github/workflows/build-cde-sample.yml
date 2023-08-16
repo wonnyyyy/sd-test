@@ -1,0 +1,41 @@
+name: Build a docker image for cde-sample
+
+on:
+  push:
+    branches:
+    - master
+    - feature/*
+
+jobs:
+  build:
+    runs-on: [cde]
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        
+    - name: Set up JDK 11
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11.0.8'
+        distribution: 'adopt'
+      
+    - name: Build with Gradle
+      run: ./gradlew build -x test
+  
+    
+
+  notify:
+    needs: [build]
+    runs-on: [cde]
+    steps:
+    - name: "build_failed"
+      if: ${{ needs.build.result == 'failure' }}
+      runs: |
+        echo "RESULT_MESSAGE=:error: Build failed" >> $GITHUB_ENV
+        echo "RESULT_COLOR=#f44336" >> $GITHUB_ENV
+    - name: "build_succeeded"
+      if: ${{ needs.build.result == 'success' }}
+      runs: |
+        echo "RESULT_MESSAGE=:success: Success to build" >> $GITHUB_ENV
+        echo "RESULT_COLOR=#4dc233" >> $GITHUB_ENV
