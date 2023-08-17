@@ -1,4 +1,5 @@
 name: Build a docker image for cde-sample
+run-name: Build the 'cde-sample' by @${{ github.actor }}
 
 on:
   push:
@@ -10,7 +11,7 @@ jobs:
   build:
     runs-on: [cde]
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v3 # Reference the major version of a release
       with:
         fetch-depth: 0
         
@@ -22,20 +23,38 @@ jobs:
       
     - name: Build with Gradle
       run: ./gradlew build -x test
-  
-    
+
+  publish:
+    runs-on: [cde]
+    needs: [build]
+    container:
+      image: docker-hub-mirror.linecorp.com/gradle:8.1.0-jdk11
+    steps:
+      - name: Publish the package
+        env:
+          GITHUB_REPOSITORY: ${{ env.GITHUB_REPOSITORY }}
+          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+        run: gradle publish
 
   notify:
-    needs: [build]
+    if: ${{ always() }}
+    needs: [publish]
     runs-on: [cde]
     steps:
-    - name: "build_failed"
-      if: ${{ needs.build.result == 'failure' }}
-      runs: |
-        echo "RESULT_MESSAGE=:error: Build failed" >> $GITHUB_ENV
-        echo "RESULT_COLOR=#f44336" >> $GITHUB_ENV
-    - name: "build_succeeded"
-      if: ${{ needs.build.result == 'success' }}
-      runs: |
-        echo "RESULT_MESSAGE=:success: Success to build" >> $GITHUB_ENV
-        echo "RESULT_COLOR=#4dc233" >> $GITHUB_ENV
+      - name: notify_success
+        uses: an/ikameshi@1.0.0
+        with:
+          channel: infra-ops-dev
+          message: '[${{ github.workflow }}] <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|#${{ github.run_number }}> by ${{ github.actor }}'
+          nickname: 'Github Actions'
+          color: 'green'
+          icon_emoji: github
+        if: ${{ success() }}
+      - name: notify_failure # by curl
+        run: |
+          curl http://ikameshi.linecorp.com/notice \
+          -d 'channel=ee-infra-ops-dev' \
+          -d 'nickname=Github Actions' \
+          -d 'color=red' \
+          -d 'message=[${{ github.workflow }}] <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|#${{ github.run_number }}> by ${{ github.actor }}'
+        if: ${{ failure() }}

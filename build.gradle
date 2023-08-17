@@ -12,24 +12,30 @@ plugins {
 }
 
 def repository = 'https://repo.linecorp.com'
+def repository_for_actions = 'https://ghe-nexus-proxy.linecorp.com'
 sourceCompatibility = '11'
-version = '0.0.3-SNAPSHOT'
+version = '0.0.1-SNAPSHOT'
 
 publishing {
     publications {
         mavenWeb(MavenPublication) {
             artifact bootWar
             groupId = 'com.linecorp'
-            artifactId = 'cde-sample'
+            artifactId = 'cde-sample-actions'
             from components.web
         }
     }
     repositories {
         maven {
             name = 'lineNexusRepository'
-            credentials(PasswordCredentials)
+            //as-is: credentials(PasswordCredentials)
+            credentials {
+                username System.getenv("GITHUB_REPOSITORY")
+                password System.getenv("GITHUB_TOKEN")
+            }
 
-            def releasesRepoUrl = "${repository}/content/repositories/releases/"
+            //as-is: def releasesRepoUrl = "${repository}/content/repositories/releases/"
+            def releasesRepoUrl = "${repository_for_actions}/content/repositories/internal/"
             def snapshotsRepoUrl = "${repository}/content/repositories/nightly/"
             url = version.endsWith('-SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
         }
