@@ -14,7 +14,7 @@ plugins {
 def repository = 'https://repo.linecorp.com'
 def repository_for_actions = 'https://ghe-nexus-proxy.linecorp.com'
 sourceCompatibility = '11'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.1'
 
 publishing {
     publications {

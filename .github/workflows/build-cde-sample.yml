@@ -1,4 +1,4 @@
-name: Build a docker image for cde-sample
+name: Build 'cde-sample' project and publish to nexus
 run-name: Build the 'cde-sample' by @${{ github.actor }}
 
 on:
@@ -6,10 +6,18 @@ on:
     branches:
     - master
     - feature/*
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: read
+  checks: write
+  pull-requests: write
 
 jobs:
   build:
     runs-on: [cde]
+
     steps:
     - uses: actions/checkout@v3 # Reference the major version of a release
       with:
@@ -28,12 +36,14 @@ jobs:
     runs-on: [cde]
     needs: [build]
     container:
-      image: docker-hub-mirror.linecorp.com/gradle:8.1.0-jdk11
+      image: docker-hub-mirror.linecorp.com/gradle:7.6.2-jdk11
+      options: --user 11000
     steps:
+      - uses: actions/checkout@v3
       - name: Publish the package
         env:
           GITHUB_REPOSITORY: ${{ env.GITHUB_REPOSITORY }}
-          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gradle publish
 
   notify:
@@ -44,13 +54,13 @@ jobs:
       - name: notify_success
         uses: an/ikameshi@1.0.0
         with:
-          channel: infra-ops-dev
+          channel: ee-infra-ops-dev
           message: '[${{ github.workflow }}] <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|#${{ github.run_number }}> by ${{ github.actor }}'
           nickname: 'Github Actions'
           color: 'green'
           icon_emoji: github
         if: ${{ success() }}
-      - name: notify_failure # by curl
+      - name: notify_failure
         run: |
           curl http://ikameshi.linecorp.com/notice \
           -d 'channel=ee-infra-ops-dev' \
