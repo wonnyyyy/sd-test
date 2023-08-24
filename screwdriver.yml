@@ -7,3 +7,4 @@ jobs:
     steps:
       - export: export GREETING="Hello, world!"
       - hello: echo $GREETING
+    image: "test"
