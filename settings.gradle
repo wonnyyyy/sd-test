@@ -1,7 +1,5 @@
 pluginManagement {
     repositories {
-        maven { url "https://repo.linecorp.com/repository/releases/" }
-        maven { url "https://repo.linecorp.com/repository/snapshots/" }
         mavenCentral()
     }
 }

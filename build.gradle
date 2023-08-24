@@ -11,42 +11,8 @@ plugins {
     id 'checkstyle'
 }
 
-def repository = 'https://repo.linecorp.com'
-def repository_for_actions = 'https://ghe-nexus-proxy.linecorp.com'
 sourceCompatibility = '11'
 version = '0.0.1'
-
-publishing {
-    publications {
-        mavenWeb(MavenPublication) {
-            artifact bootWar
-            groupId = 'com.linecorp'
-            artifactId = 'cde-sample-actions'
-            from components.web
-        }
-    }
-    repositories {
-        maven {
-            name = 'lineNexusRepository'
-            //as-is: credentials(PasswordCredentials)
-            credentials {
-                username System.getenv("GITHUB_REPOSITORY")
-                password System.getenv("GITHUB_TOKEN")
-            }
-
-            //as-is: def releasesRepoUrl = "${repository}/content/repositories/releases/"
-            def releasesRepoUrl = "${repository_for_actions}/content/repositories/internal/"
-            def snapshotsRepoUrl = "${repository}/content/repositories/nightly/"
-            url = version.endsWith('-SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-        }
-    }
-}
-
-jacoco {
-    toolVersion = "0.8.8"
-    //Default reportsDriectory is $buildDir/reports/jacoco
-    //reportsDirectory = layout.buildDirectory.dir('customJacococReportDir')
-}
 
 configurations {
     compileOnly {
@@ -55,8 +21,6 @@ configurations {
 }
 
 repositories {
-    maven { url "${repository}/repository/releases/" }
-    maven { url "${repository}/repository/snapshots/" }
     mavenCentral()
 }
 
@@ -69,35 +33,6 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
-    finalizedBy jacocoTestReport // report is always generated after tests run
-}
-
-jacocoTestReport {
-    dependsOn test // tests are required to run before generating the report
-    reports {
-        xml.required = true
-        csv.required = false
-        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
-    }
-}
-
-sonarqube {
-    properties {
-        property 'sonar.host.url', 'https://sonar.linecorp.com'
-        //line-dev-user account token
-        property 'sonar.login', '4a63ce650324993ccf74072f8358c5cbc7986a79'
-        property 'sonar.projectKey', 'LINE-DevOps_cde-sample'
-        property 'sonar.projectName', 'cde-sample'
-        property 'sonar.projectDescription', 'CDE(Common DevOps Engineering) - Sample project for build tests'
-        property 'sonar.sources', 'src/main'
-        property 'sonar.tests', 'src/test'
-        property 'sonar.java.binaries', 'build/classes'
-        property 'sonar.language', 'java'
-        property 'sonar.sourceEncoding' , 'UTF-8'
-    }
-}
 
 pmd {
     consoleOutput = true

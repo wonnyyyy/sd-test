@@ -1,4 +1,4 @@
-name: Build 'cde-sample' project and publish to nexus
+name: Build 'cde-sample' project
 run-name: Build the 'cde-sample' by @${{ github.actor }}
 
 on:
@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: [cde]
+    runs-on: self-hosted
 
     steps:
     - uses: actions/checkout@v3 # Reference the major version of a release
@@ -31,40 +31,3 @@ jobs:
       
     - name: Build with Gradle
       run: ./gradlew build -x test
-
-  publish:
-    runs-on: [cde]
-    needs: [build]
-    container:
-      image: docker-hub-mirror.linecorp.com/gradle:7.6.2-jdk11
-      options: --user 11000
-    steps:
-      - uses: actions/checkout@v3
-      - name: Publish the package
-        env:
-          GITHUB_REPOSITORY: ${{ env.GITHUB_REPOSITORY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gradle publish
-
-  notify:
-    if: ${{ always() }}
-    needs: [publish]
-    runs-on: [cde]
-    steps:
-      - name: notify_success
-        uses: an/ikameshi@1.0.0
-        with:
-          channel: ee-infra-ops-dev
-          message: '[${{ github.workflow }}] <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|#${{ github.run_number }}> by ${{ github.actor }}'
-          nickname: 'Github Actions'
-          color: 'green'
-          icon_emoji: github
-        if: ${{ success() }}
-      - name: notify_failure
-        run: |
-          curl http://ikameshi.linecorp.com/notice \
-          -d 'channel=ee-infra-ops-dev' \
-          -d 'nickname=Github Actions' \
-          -d 'color=red' \
-          -d 'message=[${{ github.workflow }}] <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|#${{ github.run_number }}> by ${{ github.actor }}'
-        if: ${{ failure() }}
