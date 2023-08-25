@@ -1,10 +1,34 @@
-# Job definition block
+shared:
+  environment:
+    NODE_ENV: test
+  settings:
+    email:
+      addresses: [wonnyyyy@gmail.com]
+      status: [SUCCESS, FAILURE]
+  annotations:
+    beta.scredriver.cd/executor: k8s-vm
+    screwdriver.cd/cpu: LOW
+    screwdriver.cd/ram: LOW
+parameters:
+  region: "us-west-1"
+  az:
+    value: "zone 1"
+    description: "default AZ"
+
 jobs:
   main:
-    # Job's trigger events
     requires: [~pr, ~commit]
-    # Steps definition block.
+    sourcePaths: ["src/main/", "screwdriver.yaml"]
+    image: node:6
     steps:
       - export: export GREETING="Hello, world!"
       - hello: echo $GREETING
-    image: "test"
+      - init: npm install
+      - test: npm test
+  publish:
+    requires: [main]
+    template: node/publish@4.3.1
+    order: [init, publis]
+    steps:
+      - publish: npm install
+
