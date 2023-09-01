@@ -17,7 +17,7 @@ parameters:
 
 jobs:
   main:
-    #requires: [~pr, ~commit]
+    requires: [~commit]
     sourcePaths: ["src/main/", "screwdriver.yaml"]
     image: node:6
     steps:
@@ -25,10 +25,4 @@ jobs:
       - hello: echo $GREETING
       - init: npm install
       - test: npm test
-  publish:
-    requires: [main]
-    template: node/publish@4.3.1
-    order: [init, publis]
-    steps:
-      - publish: npm install
 
