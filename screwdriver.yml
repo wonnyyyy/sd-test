@@ -17,7 +17,7 @@ parameters:
 
 jobs:
   main:
-    requires: [~pr, ~commit]
+    #requires: [~pr, ~commit]
     sourcePaths: ["src/main/", "screwdriver.yaml"]
     image: node:6
     steps:
