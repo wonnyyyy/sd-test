@@ -4,7 +4,6 @@ shared:
   settings:
     email:
       addresses: [wonnyyyy@gmail.com]
-      status: [SUCCESS, FAILURE]
   annotations:
     beta.scredriver.cd/executor: k8s-vm
     screwdriver.cd/cpu: LOW
