@@ -5,14 +5,14 @@ shared:
     email:
       addresses: [wonnyyyy@gmail.com]
   annotations:
-    beta.scredriver.cd/executor: k8s-vm
-    screwdriver.cd/cpu: LOW
-    screwdriver.cd/ram: LOW
-parameters:
-  region: "us-west-1"
-  az:
-    value: "zone 1"
-    description: "default AZ"
+    beta.scredriver.cd/executor: docker
+    #screwdriver.cd/cpu: LOW
+    #screwdriver.cd/ram: LOW
+#parameters:
+#  region: "us-west-1"
+#  az:
+#    value: "zone 1"
+#    description: "default AZ"
 
 jobs:
   main:
